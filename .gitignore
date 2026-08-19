@@ -1,0 +1,26 @@
+.env
+.env.*
+!.env.example
+
+# Python / dbt
+__pycache__/
+*.py[cod]
+dbt/bsr_analytics/target/
+dbt/bsr_analytics/logs/
+dbt/bsr_analytics/.user.yml
+
+# Airflow runtime artifacts
+airflow/logs/
+
+# Local runtime data and secrets
+data/
+secrets/
+certificates/
+*.key
+*.pem
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,28 @@
+name: bsr_analytics
+version: 1.0.0
+config-version: 2
+
+profile: bsr_analytics
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  bsr_analytics:
+    staging:
+      +schema: staging
+      +materialized: view
+    core:
+      +schema: core
+      +materialized: table
+    marts:
+      +schema: mart
+      +materialized: table
+
+seeds:
+  bsr_analytics:
+    +schema: raw
+    +quote_columns: false

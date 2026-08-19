@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_equipment
+    columns:
+      - name: equipment_key
+        tests: [not_null, unique]
+      - name: equipment_code
+        tests: [not_null, unique]
+  - name: dim_department
+    columns:
+      - name: department_key
+        tests: [not_null, unique]
+      - name: department_code
+        tests: [not_null, unique]
+  - name: fact_work_order
+    columns:
+      - name: wo_number
+        tests: [not_null, unique]
+      - name: status
+        tests:
+          - accepted_values:
+              values: [WAPPR, APPR, INPRG, COMP, CAN]

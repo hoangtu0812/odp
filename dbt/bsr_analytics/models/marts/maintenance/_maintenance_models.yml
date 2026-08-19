@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: workorder_summary
+    description: KPI Work Order theo ngày, khu vực và trạng thái; là dataset đầu tiên cho Superset.
+    columns:
+      - name: reported_date
+        tests: [not_null]
+      - name: work_order_count
+        tests: [not_null]

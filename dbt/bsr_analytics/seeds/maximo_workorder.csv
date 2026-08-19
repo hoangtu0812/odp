@@ -1,0 +1,6 @@
+wo_number,description,status,area,equipment_code,department_code,reported_at,target_finish_at,actual_finish_at,estimated_cost
+WO-10001,Inspect cooling-water pump,COMP,A,P-1001,MAINT,2026-08-01 08:15:00,2026-08-02 17:00:00,2026-08-02 14:30:00,12000000
+WO-10002,Replace valve actuator,INPRG,B,V-2044,MAINT,2026-08-03 09:30:00,2026-08-06 17:00:00,,28500000
+WO-10003,Calibrate pressure transmitter,WAPPR,A,PT-3021,OPS,2026-08-04 13:00:00,2026-08-05 17:00:00,,4500000
+WO-10004,Repair conveyor motor,COMP,C,M-5010,MAINT,2026-07-28 07:45:00,2026-08-01 17:00:00,2026-08-03 10:00:00,18500000
+WO-10005,Inspect tank level gauge,CAN,B,LT-4012,OPS,2026-08-05 11:20:00,2026-08-07 17:00:00,,3200000
