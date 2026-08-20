@@ -1,0 +1,24 @@
+{
+  "realm": "open-source-data-platform",
+  "enabled": true,
+  "displayName": "Open Source Data Platform",
+  "roles": {
+    "realm": [
+      {"name": "platform_admin", "description": "Platform administration"},
+      {"name": "data_engineer", "description": "Ingestion and transformation operations"},
+      {"name": "maintenance_analyst", "description": "Maintenance mart read access"},
+      {"name": "viewer", "description": "Read-only application access"}
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "platform-portal",
+      "name": "Open Source Data Platform Portal",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"]
+    }
+  ]
+}

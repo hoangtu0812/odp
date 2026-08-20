@@ -22,6 +22,22 @@ services:
       retries: 12
       start_period: 10s
 
+  postgres-migrations:
+    image: postgres:16.4-alpine
+    env_file:
+      - ../../.env
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+    entrypoint: ["bash", "/scripts/run-migrations.sh"]
+    volumes:
+      - ../../sql/migrations:/migrations:ro
+      - ../../docker/postgres/run-migrations.sh:/scripts/run-migrations.sh:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   dbt:
     image: ghcr.io/dbt-labs/dbt-postgres:1.9.0
     profiles: ["tools"]
@@ -32,9 +48,278 @@ services:
       # dbt writes compiled artifacts to target/ and logs/; both are gitignored.
       - ../../dbt/bsr_analytics:/usr/app
     depends_on:
+      postgres-migrations:
+        condition: service_completed_successfully
+    entrypoint: ["dbt"]
+
+  maximo-ingest:
+    profiles: ["ingestion"]
+    build:
+      context: ../../ingestion/maximo
+    image: bsr-maximo-ingest:1.0.0
+    env_file:
+      - ../../.env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT_INTERNAL: "5432"
+      MAXIMO_ALLOW_INSECURE_HTTP: "${MAXIMO_ALLOW_INSECURE_HTTP:-false}"
+    depends_on:
+      postgres-migrations:
+        condition: service_completed_successfully
+    restart: "no"
+
+  superset-init:
+    profiles: ["analytics"]
+    build:
+      context: ../../docker/superset
+    image: bsr-superset:6.0.0
+    env_file:
+      - ../../.env
+    environment: &superset_environment
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
+      SUPERSET_SECRET_KEY: "${SUPERSET_SECRET_KEY:-local-development-only-change-before-shared-use}"
+      SUPERSET_ADMIN_PASSWORD: "${SUPERSET_ADMIN_PASSWORD:-change-me-before-running}"
+    entrypoint: ["bash", "/app/pythonpath/init_superset.sh"]
+    volumes: &superset_volumes
+      - ../../docker/superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+      - ../../docker/superset/init_superset.sh:/app/pythonpath/init_superset.sh:ro
+    depends_on:
+      postgres-migrations:
+        condition: service_completed_successfully
+    restart: "no"
+
+  superset:
+    profiles: ["analytics"]
+    image: bsr-superset:6.0.0
+    env_file:
+      - ../../.env
+    environment: *superset_environment
+    command: ["/usr/bin/run-server.sh"]
+    ports:
+      - "${SUPERSET_PORT:-8088}:8088"
+    volumes: *superset_volumes
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  portal:
+    profiles: ["portal"]
+    build:
+      context: ../..
+      dockerfile: docker/portal/Dockerfile
+    image: bsr-data-portal:1.0.0
+    ports:
+      - "${PORTAL_PORT:-3000}:80"
+    restart: unless-stopped
+
+  prometheus:
+    profiles: ["observability"]
+    image: prom/prometheus:v3.0.1
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.enable-lifecycle"
+      - "--web.enable-admin-api"
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ../../docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../../docker/prometheus/rules.yml:/etc/prometheus/rules.yml:ro
+      - prometheus_data:/prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:9090/-/ready > /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
+  blackbox-exporter:
+    profiles: ["observability"]
+    image: prom/blackbox-exporter:v0.25.0
+    command: ["--config.file=/config/blackbox.yml"]
+    volumes:
+      - ../../docker/blackbox/blackbox.yml:/config/blackbox.yml:ro
+    restart: unless-stopped
+
+  postgres-exporter:
+    profiles: ["observability"]
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.16.0
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/dwh?sslmode=disable"
+    depends_on:
       postgres:
         condition: service_healthy
-    entrypoint: ["dbt"]
+    restart: unless-stopped
+
+  grafana:
+    profiles: ["observability"]
+    image: grafana/grafana:11.3.0
+    environment:
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USER:-admin}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:-change-me-before-shared-use}"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ../../docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../../docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/health > /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
+  alertmanager:
+    profiles: ["observability"]
+    image: quay.io/prometheus/alertmanager:v0.27.0
+    command: ["--config.file=/etc/alertmanager/alertmanager.yml", "--storage.path=/alertmanager"]
+    ports:
+      - "${ALERTMANAGER_PORT:-9093}:9093"
+    volumes:
+      - ../../docker/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    restart: unless-stopped
+
+  loki:
+    profiles: ["observability"]
+    image: grafana/loki:3.7.0
+    command: ["-config.file=/etc/loki/config.yml"]
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    volumes:
+      - ../../docker/loki/config.yml:/etc/loki/config.yml:ro
+      - loki_data:/loki
+    restart: unless-stopped
+
+  alloy:
+    profiles: ["observability"]
+    image: grafana/alloy:v1.5.1
+    command: ["run", "/etc/alloy/config.alloy", "--server.http.listen-addr=0.0.0.0:12345"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ../../docker/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - alloy_data:/var/lib/alloy/data
+    depends_on:
+      loki:
+        condition: service_started
+    restart: unless-stopped
+
+  minio:
+    profiles: ["lakehouse"]
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+    command: ["server", "/data", "--console-address", ":9001"]
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  minio-init:
+    profiles: ["lakehouse"]
+    image: minio/mc:RELEASE.2025-03-12T17-29-24Z
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        until mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"; do sleep 2; done;
+        mc mb --ignore-existing local/warehouse;
+        mc mb --ignore-existing local/data-platform;
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+    depends_on:
+      minio:
+        condition: service_started
+    restart: "no"
+
+  iceberg-rest:
+    profiles: ["lakehouse"]
+    image: apache/iceberg-rest-fixture:1.10.1
+    environment:
+      AWS_ACCESS_KEY_ID: "${MINIO_ROOT_USER:-minioadmin}"
+      AWS_SECRET_ACCESS_KEY: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+      AWS_REGION: us-east-1
+      CATALOG_WAREHOUSE: s3://warehouse/
+      CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+      CATALOG_S3_ENDPOINT: http://minio:9000
+    ports:
+      - "${ICEBERG_REST_PORT:-8181}:8181"
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  keycloak:
+    profiles: ["governance"]
+    image: quay.io/keycloak/keycloak:26.0.7
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "${KEYCLOAK_ADMIN_USER:-admin}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD:-change-me-before-shared-use}"
+    ports:
+      - "${KEYCLOAK_PORT:-8180}:8080"
+    volumes:
+      - ../../keycloak/realm:/opt/keycloak/data/import:ro
+      - keycloak_data:/opt/keycloak/data
+    restart: unless-stopped
+
+  opa:
+    profiles: ["governance"]
+    image: openpolicyagent/opa:0.69.0-static
+    command: ["run", "--server", "--addr=0.0.0.0:8181", "/policies"]
+    ports:
+      - "${OPA_PORT:-8182}:8181"
+    volumes:
+      - ../../opa/policies:/policies:ro
+    restart: unless-stopped
+
+  ai-service:
+    profiles: ["ai"]
+    build:
+      context: ../../ai-service
+    image: open-source-data-platform-ai-service:1.0.0
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT_INTERNAL: "5432"
+      DBT_DATABASE: dwh
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - "${AI_SERVICE_PORT:-8010}:8010"
+    depends_on:
+      postgres-migrations:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  trino:
+    profiles: ["lakehouse"]
+    image: trinodb/trino:483
+    env_file:
+      - ../../.env
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minioadmin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minioadmin}"
+    ports:
+      - "${TRINO_PORT:-8081}:8080"
+    volumes:
+      - ../../docker/trino/catalog:/etc/trino/catalog:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      iceberg-rest:
+        condition: service_started
+    restart: unless-stopped
 
   airflow-init:
     profiles: ["orchestration"]
@@ -57,16 +342,21 @@ services:
       DBT_USER: "${POSTGRES_USER}"
       DBT_PASSWORD: "${POSTGRES_PASSWORD}"
       DBT_DATABASE: dwh
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT_INTERNAL: "5432"
+      MAXIMO_ALLOW_INSECURE_HTTP: "${MAXIMO_ALLOW_INSECURE_HTTP:-false}"
+      MAXIMO_INGEST_ENABLED: "${MAXIMO_INGEST_ENABLED:-false}"
     entrypoint: ["bash", "/opt/airflow/platform-entrypoint.sh"]
     command: ["db", "migrate"]
     volumes: &airflow_volumes
       - ../../airflow/dags:/opt/airflow/dags:ro
       - ../../airflow/logs:/opt/airflow/logs
       - ../../dbt/bsr_analytics:/opt/dbt
+      - ../../ingestion/maximo/maximo_ingest.py:/opt/ingestion/maximo_ingest.py:ro
       - ../../docker/airflow/platform-entrypoint.sh:/opt/airflow/platform-entrypoint.sh:ro
     depends_on:
-      postgres:
-        condition: service_healthy
+      postgres-migrations:
+        condition: service_completed_successfully
     restart: "no"
 
   airflow-api-server:
@@ -115,3 +405,10 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:
+  prometheus_data:
+  grafana_data:
+  alertmanager_data:
+  loki_data:
+  alloy_data:
+  keycloak_data:

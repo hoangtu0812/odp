@@ -1,0 +1,39 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - /etc/prometheus/rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: [alertmanager:9093]
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: [prometheus:9090]
+
+  - job_name: postgres
+    static_configs:
+      - targets: [postgres-exporter:9187]
+
+  - job_name: http-services
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://airflow-api-server:8080/api/v2/monitor/health
+          - http://superset:8088/health
+          - http://minio:9000/minio/health/live
+          - http://trino:8080/v1/info
+          - http://portal:80/
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

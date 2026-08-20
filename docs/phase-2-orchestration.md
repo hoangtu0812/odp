@@ -6,7 +6,7 @@
 - `airflow-scheduler`: tạo DAG run theo lịch.
 - `airflow-dag-processor`: parse và đăng ký DAG.
 - `airflow-init`: chạy migration cho metadata database `airflow` trước khi các service chính khởi động.
-- `maximo_dbt_pipeline`: chạy `dbt build` mỗi 15 phút, retry hai lần với khoảng cách năm phút.
+- `maximo_dbt_pipeline`: nạp incremental Maximo (khi được bật), sau đó chạy `dbt run` và `dbt test` mỗi 15 phút; retry hai lần với khoảng cách năm phút.
 
 Airflow dùng `LocalExecutor`, phù hợp cho Local Lab. TEST/Production cần thay bằng executor và mô hình vận hành phù hợp với tải thực tế.
 

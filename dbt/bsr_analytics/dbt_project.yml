@@ -26,3 +26,6 @@ seeds:
   bsr_analytics:
     +schema: raw
     +quote_columns: false
+    # The CSV is only a local demonstration fixture. Production and Maximo
+    # integration runs populate raw.maximo_workorder through the connector.
+    +enabled: false

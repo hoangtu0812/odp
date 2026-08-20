@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namePrefix": { "value": "bsrdata01" },
+    "location": { "value": "southeastasia" },
+    "tenantId": { "value": "replace-with-azure-tenant-id" },
+    "storageSku": { "value": "Standard_LRS" }
+  }
+}

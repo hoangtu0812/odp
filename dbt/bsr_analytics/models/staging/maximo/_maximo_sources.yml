@@ -2,13 +2,13 @@ version: 2
 
 sources:
   - name: raw
-    description: Dữ liệu gốc được đồng bộ từ Maximo. Seed được dùng cho local lab.
+    description: Dữ liệu gốc được custom connector đồng bộ incremental từ Maximo.
     schema: raw
     tables:
       - name: maximo_workorder
         description: Maximo work orders landed without business transformations.
         columns:
-          - name: wo_number
+          - name: source_key
             tests:
               - not_null
               - unique
@@ -17,11 +17,12 @@ models:
   - name: stg_maximo_workorder
     description: Work orders đã chuẩn hóa kiểu dữ liệu và mã nghiệp vụ.
     columns:
-      - name: wo_number
+      - name: work_order_key
         tests:
           - not_null
           - unique
       - name: status
         tests:
-          - accepted_values:
-              values: [WAPPR, APPR, INPRG, COMP, CAN]
+          # Status workflows are configured per Maximo implementation; require
+          # a populated code without rejecting valid BSR-specific statuses.
+          - not_null

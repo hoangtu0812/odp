@@ -1,0 +1,26 @@
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.containers.targets
+  forward_to = [loki.process.platform.receiver]
+}
+
+loki.process "platform" {
+  forward_to = [loki.write.default.receiver]
+
+  stage.static_labels {
+    values = {
+      environment = "local",
+      platform    = "open-source-data-platform",
+    }
+  }
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

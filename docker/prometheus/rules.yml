@@ -1,0 +1,19 @@
+groups:
+  - name: platform-availability
+    rules:
+      - alert: ServiceProbeFailed
+        expr: probe_success{job="http-services"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Platform service is unreachable"
+          description: "{{ $labels.instance }} has failed HTTP health probes for more than two minutes."
+      - alert: PostgreSQLUnavailable
+        expr: pg_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL DWH is unavailable"
+          description: "postgres-exporter cannot connect to the DWH."

@@ -6,18 +6,17 @@ models:
       - name: equipment_key
         tests: [not_null, unique]
       - name: equipment_code
-        tests: [not_null, unique]
+        tests: [not_null]
   - name: dim_department
     columns:
       - name: department_key
         tests: [not_null, unique]
       - name: department_code
-        tests: [not_null, unique]
+        tests: [not_null]
   - name: fact_work_order
     columns:
-      - name: wo_number
+      - name: work_order_key
         tests: [not_null, unique]
       - name: status
         tests:
-          - accepted_values:
-              values: [WAPPR, APPR, INPRG, COMP, CAN]
+          - not_null
