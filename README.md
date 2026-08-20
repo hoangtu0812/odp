@@ -15,8 +15,16 @@
 ![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)
 ![Apache Superset](https://img.shields.io/badge/Apache%20Superset-20A7C9?style=flat&logo=apachesuperset&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat&logo=prometheus&logoColor=white)
+![Loki](https://img.shields.io/badge/Grafana%20Loki-F46800?style=flat&logo=grafana&logoColor=white)
 ![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?style=flat&logo=keycloak&logoColor=white)
 ![MinIO](https://img.shields.io/badge/MinIO-C72E49?style=flat&logo=minio&logoColor=white)
+![Apache Iceberg](https://img.shields.io/badge/Apache%20Iceberg-0095D5?style=flat&logo=apacheiceberg&logoColor=white)
+![Trino](https://img.shields.io/badge/Trino-DD00A1?style=flat&logo=trino&logoColor=white)
+![Airbyte](https://img.shields.io/badge/Airbyte-615EFF?style=flat&logo=airbyte&logoColor=white)
+![OpenMetadata](https://img.shields.io/badge/OpenMetadata-4F44E5?style=flat&logo=openmetadata&logoColor=white)
+![Open Policy Agent](https://img.shields.io/badge/Open%20Policy%20Agent-7D6CF1?style=flat&logo=openpolicyagent&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 
 ## Purpose
 
@@ -91,18 +99,16 @@ Use your DNS hostname instead of `localhost` when the lab is accessed from anoth
 ### 3. Start the complete Local Lab
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml `
-  --profile portal --profile analytics --profile orchestration `
-  --profile observability --profile lakehouse --profile governance --profile ai `
-  up -d --build
+.\scripts\start-local-lab.ps1
 ```
 
-The one-time database, Superset, Airflow, MinIO, and Entra configuration jobs may take a few minutes. Check progress with:
+The launcher starts the main Docker Compose profiles, Airbyte's separate `abctl`/Kind runtime, and OpenMetadata's separate official Compose runtime. On a new developer workstation, install Airbyte's `abctl` automatically with:
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml ps
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml logs --tail=100 keycloak-entra-config trino
+.\scripts\start-local-lab.ps1 -InstallAirbyte
 ```
+
+The first OpenMetadata download and the one-time database, Superset, Airflow, MinIO, and Entra jobs can take several minutes. If Docker Desktop resources are limited, start the main platform first with `-SkipAirbyte -SkipOpenMetadata`. `-Initialize` creates a missing `.env` from the template and stops so you can configure it safely before the first start. `-Restart` restarts the primary Compose services while retaining volumes.
 
 ### 4. Open the applications
 
@@ -146,7 +152,7 @@ docker compose --project-name open-source-data-platform-openmetadata `
 docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml down
 ```
 
-`down` stops containers while retaining named volumes. Do not add `--volumes` unless you explicitly intend to remove local platform data.
+`down` stops the primary Compose project while retaining named volumes. Airbyte and OpenMetadata have independent runtimes; follow their tool guides to stop them. Do not add `--volumes` unless you explicitly intend to remove local platform data.
 
 ## Tool guides
 

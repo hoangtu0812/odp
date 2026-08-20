@@ -9,8 +9,12 @@ Airbyte is the planned connector-management layer for repeatable source-to-desti
 Airbyte is deployed by its official `abctl` tool. It creates a dedicated Kind Kubernetes cluster inside Docker, so it does not use the Docker Desktop Kubernetes setting.
 
 ```powershell
-& .\scripts\start-airbyte.ps1 -InstallAbctl
-& "$env:USERPROFILE\go\bin\abctl.exe" local status
+# Complete Local Lab, including Airbyte.
+.\scripts\start-local-lab.ps1 -InstallAirbyte
+
+# Or start only the Airbyte runtime after the first setup.
+.\scripts\start-airbyte.ps1
+abctl local status
 ```
 
 Open http://localhost:8001. Retrieve generated local credentials only when needed with `abctl local credentials`; do not commit or paste them into platform documentation.
@@ -26,7 +30,7 @@ Record source owner, selected streams, cursor field, primary key, schedule, rete
 
 ## Operate safely
 
-Check readiness with `abctl local status`. Airbyte runs outside the platform Compose project, so `docker compose down` for the platform does not stop it. `abctl local uninstall` removes the local Kind installation; use it only when you intentionally want to remove Airbyte runtime data.
+Check readiness with `abctl local status`. Airbyte runs outside the platform Compose project, so `docker compose down` for the platform does not stop it. `abctl local uninstall` removes the local Kind installation and should only be used when deliberately discarding Airbyte runtime data.
 
 ## Operational checklist
 

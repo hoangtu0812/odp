@@ -11,8 +11,10 @@ Trang gốc công khai là landing page **Loop Data Lab (LDL)**: giao diện the
 ## Khởi động
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile portal up -d --build
+.\scripts\start-local-lab.ps1 -SkipAirbyte -SkipOpenMetadata
 ```
+
+Script kiểm tra ba biến Azure Entra và các OIDC secret của Portal trước khi khởi động. Chỉ dùng `-SkipPortal` khi chủ động chạy các dịch vụ Local Lab còn lại mà không dùng cổng vào Azure.
 
 Mở http://localhost:3000, chọn **Continue with Azure Entra**. Đăng nhập xong, trình duyệt quay lại `http://localhost:3000/portal/`.
 

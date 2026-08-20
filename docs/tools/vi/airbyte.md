@@ -11,8 +11,12 @@ Airbyte quản lý source, destination, connection và lịch đồng bộ cho c
 Airbyte dùng `abctl`, tự tạo Kind cluster trong Docker nên không phụ thuộc Kubernetes tích hợp của Docker Desktop.
 
 ```powershell
-& .\scripts\start-airbyte.ps1 -InstallAbctl
-& "$env:USERPROFILE\go\bin\abctl.exe" local status
+# Chạy toàn bộ Local Lab, bao gồm Airbyte.
+.\scripts\start-local-lab.ps1 -InstallAirbyte
+
+# Hoặc chỉ chạy Airbyte sau lần setup đầu.
+.\scripts\start-airbyte.ps1
+abctl local status
 ```
 
 Mở http://localhost:8001. Lấy credential local bằng `abctl local credentials`; không copy credential vào Git hoặc chat.
@@ -28,4 +32,4 @@ Theo dõi job lỗi, schema drift, freshness và volume. Mỗi connection phải
 
 ## Vận hành an toàn
 
-Kiểm tra bằng `abctl local status`. Airbyte chạy ngoài Compose project chính nên `docker compose down` của nền tảng không dừng nó. `abctl local uninstall` xóa Kind installation local; chỉ dùng khi chủ động muốn xóa runtime data của Airbyte.
+Kiểm tra bằng `abctl local status`. Airbyte chạy ngoài Compose project chính nên `docker compose down` của nền tảng không dừng nó. `abctl local uninstall` xóa Kind installation local, chỉ dùng khi chủ động muốn bỏ runtime data của Airbyte.

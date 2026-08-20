@@ -1,4 +1,4 @@
-# Hướng dẫn ứng dụng và vận hành Open Source Data Platform
+# Loop Data Lab (LDL) — hướng dẫn ứng dụng và vận hành
 
 ## 1. Mục đích và luồng vận hành
 
@@ -42,31 +42,20 @@ Prometheus → Grafana
 | Prometheus | 9090 | Thu thập metrics/probe Local Lab, retention 15 ngày | Đang chạy |
 | MinIO | 9000/9001 | Object storage S3-compatible Local Lab | Đang chạy |
 | Trino | 8081 | SQL federation, hiện truy vấn PostgreSQL DWH | Đang chạy |
+| Airbyte | 8001 | Quản lý connector/source/destination chạy trong Kind | Đang chạy độc lập qua `abctl` |
+| OpenMetadata | 8585 | Data catalog, ownership, lineage và data quality | Đang chạy độc lập qua Compose |
+| Keycloak | 8180 | Identity broker và Azure Entra SSO cho Portal | Đang chạy |
 | Azure Bicep | CLI | Khai báo ACR, storage, Key Vault, Log Analytics | Đã validate; chưa deploy |
 
 ## 3. Khởi động local
 
-Chạy từ repository root trong PowerShell. Docker Desktop phải đang chạy.
+Chạy từ repository root trong PowerShell. Docker Desktop phải đang chạy. Script duy nhất dưới đây điều phối các profile Compose chính, Airbyte `abctl`/Kind và OpenMetadata Compose độc lập:
 
 ```powershell
-# DWH + migrations
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml up -d postgres postgres-migrations
-
-# Airflow
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile orchestration up -d --build
-
-# BI
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile analytics up -d --build superset
-
-# Portal
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile portal up -d --build portal
-
-# Monitoring
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile observability up -d
-
-# Object storage + query engine
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile lakehouse up -d
+.\scripts\start-local-lab.ps1
 ```
+
+Trên máy mới, chạy `.\scripts\start-local-lab.ps1 -InstallAirbyte` để cài `abctl` (cần Go). Nếu chưa có `.env`, chạy `-Initialize`, điền password/secret và ba biến Azure Entra, rồi chạy lại. Khi Docker thiếu tài nguyên, chạy `-SkipAirbyte -SkipOpenMetadata`; khi không muốn khởi động Portal Azure, thêm `-SkipPortal`.
 
 Kiểm tra tổng quan:
 
@@ -79,6 +68,9 @@ Invoke-WebRequest http://localhost:3001/api/health
 Invoke-WebRequest http://localhost:9090/-/ready
 Invoke-WebRequest http://localhost:8081/v1/info
 Invoke-WebRequest http://localhost:9000/minio/health/live
+& "$env:USERPROFILE\go\bin\abctl.exe" local status
+docker compose --project-name open-source-data-platform-openmetadata `
+  -f .runtime\openmetadata\docker-compose.yml ps
 ```
 
 ## 4. Vận hành ingestion Maximo

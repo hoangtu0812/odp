@@ -13,8 +13,18 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=flat&logo=apacheairflow&logoColor=white)
 ![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)
+![Apache Superset](https://img.shields.io/badge/Apache%20Superset-20A7C9?style=flat&logo=apachesuperset&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat&logo=prometheus&logoColor=white)
+![Loki](https://img.shields.io/badge/Grafana%20Loki-F46800?style=flat&logo=grafana&logoColor=white)
 ![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?style=flat&logo=keycloak&logoColor=white)
+![MinIO](https://img.shields.io/badge/MinIO-C72E49?style=flat&logo=minio&logoColor=white)
+![Apache Iceberg](https://img.shields.io/badge/Apache%20Iceberg-0095D5?style=flat&logo=apacheiceberg&logoColor=white)
+![Trino](https://img.shields.io/badge/Trino-DD00A1?style=flat&logo=trino&logoColor=white)
+![Airbyte](https://img.shields.io/badge/Airbyte-615EFF?style=flat&logo=airbyte&logoColor=white)
+![OpenMetadata](https://img.shields.io/badge/OpenMetadata-4F44E5?style=flat&logo=openmetadata&logoColor=white)
+![Open Policy Agent](https://img.shields.io/badge/Open%20Policy%20Agent-7D6CF1?style=flat&logo=openpolicyagent&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 
 ## Mục đích nền tảng
 
@@ -77,18 +87,16 @@ Nếu chạy bằng hostname hoặc từ máy khác, thay `localhost` bằng hos
 ### 3. Khởi động toàn bộ nền tảng
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml `
-  --profile portal --profile analytics --profile orchestration `
-  --profile observability --profile lakehouse --profile governance --profile ai `
-  up -d --build
+.\scripts\start-local-lab.ps1
 ```
 
-Xem trạng thái và log job khởi tạo:
+Script điều phối các profile Docker Compose chính, runtime Airbyte `abctl`/Kind riêng và OpenMetadata Compose riêng. Trên máy mới, cài tự động `abctl` của Airbyte bằng:
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml ps
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml logs --tail=100 keycloak-entra-config trino
+.\scripts\start-local-lab.ps1 -InstallAirbyte
 ```
+
+Lần tải OpenMetadata đầu tiên và các job database, Superset, Airflow, MinIO, Entra có thể mất vài phút. Nếu Docker Desktop thiếu tài nguyên, chạy platform chính trước với `-SkipAirbyte -SkipOpenMetadata`. `-Initialize` tạo `.env` còn thiếu từ template rồi dừng để bạn cấu hình an toàn; `-Restart` khởi động lại Compose chính nhưng vẫn giữ volumes.
 
 ### 4. Mở ứng dụng
 
@@ -131,7 +139,7 @@ docker compose --project-name open-source-data-platform-openmetadata `
 docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml down
 ```
 
-Lệnh này giữ named volumes. Không thêm `--volumes` nếu chưa chủ động muốn xóa dữ liệu local.
+Lệnh này chỉ dừng Compose project chính và giữ named volumes. Airbyte và OpenMetadata có runtime riêng, xem hướng dẫn từng công cụ để dừng chúng. Không thêm `--volumes` nếu chưa chủ động muốn xóa dữ liệu local.
 
 ## Tài liệu từng công cụ
 

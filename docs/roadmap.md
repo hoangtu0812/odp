@@ -1,4 +1,4 @@
-# Open Source Data Platform roadmap
+# Loop Data Lab (LDL) roadmap
 
 This is the single implementation roadmap. It is separate from the README so the README remains an operational entry point.
 

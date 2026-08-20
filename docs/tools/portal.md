@@ -9,8 +9,10 @@ The public root page is a Loop Data Lab (LDL) landing page. It introduces the pl
 ## Start
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile portal up -d --build
+.\scripts\start-local-lab.ps1 -SkipAirbyte -SkipOpenMetadata
 ```
+
+The launcher validates the three Azure Entra variables and the Portal OIDC secrets before starting the Portal. Use `-SkipPortal` only when deliberately starting the other Local Lab services without the Azure-gated entry point.
 
 Open http://localhost:3000. Select **Continue with Azure Entra**; after Azure completes, the browser returns to `http://localhost:3000/portal/`.
 

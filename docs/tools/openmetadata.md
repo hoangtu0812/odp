@@ -9,6 +9,10 @@ OpenMetadata is the planned central catalog for datasets, ownership, glossary te
 OpenMetadata runs as an isolated, official version-pinned Compose stack because it includes a server, ingestion service, PostgreSQL, and Elasticsearch. The provided script downloads the upstream `1.12.6` PostgreSQL quickstart, moves its ingestion UI to port `8084` to avoid Airflow and its database port to `5433` to avoid the platform warehouse, then starts it under a separate Compose project.
 
 ```powershell
+# Complete Local Lab, including OpenMetadata.
+.\scripts\start-local-lab.ps1
+
+# Or start only the OpenMetadata runtime.
 .\scripts\start-openmetadata.ps1
 docker compose --project-name open-source-data-platform-openmetadata `
   -f .runtime\openmetadata\docker-compose.yml ps

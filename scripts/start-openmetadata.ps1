@@ -7,7 +7,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$runtimeDirectory = Join-Path $PSScriptRoot '..\.runtime\openmetadata'
+$root = Split-Path -Parent $PSScriptRoot
+$runtimeDirectory = Join-Path $root '.runtime\openmetadata'
 $composeFile = Join-Path $runtimeDirectory 'docker-compose.yml'
 $releaseUrl = "https://github.com/open-metadata/OpenMetadata/releases/download/$Version-release/docker-compose-postgres.yml"
 
@@ -23,6 +24,9 @@ if ($RefreshCompose -or -not (Test-Path $composeFile)) {
 }
 
 $envFile = Join-Path $root '.env'
+if (-not (Test-Path $envFile)) {
+  throw "Missing $envFile. Run .\scripts\start-local-lab.ps1 -Initialize, configure .env, then retry."
+}
 docker compose --env-file $envFile --project-name open-source-data-platform-openmetadata -f $composeFile up -d
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
