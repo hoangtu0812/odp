@@ -22,7 +22,8 @@ if ($RefreshCompose -or -not (Test-Path $composeFile)) {
   Set-Content -NoNewline -Path $composeFile -Value $compose
 }
 
-docker compose --project-name open-source-data-platform-openmetadata -f $composeFile up -d
+$envFile = Join-Path $root '.env'
+docker compose --env-file $envFile --project-name open-source-data-platform-openmetadata -f $composeFile up -d
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "OpenMetadata UI: http://localhost:$UiPort"

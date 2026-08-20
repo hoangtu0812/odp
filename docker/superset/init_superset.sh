@@ -13,4 +13,8 @@ if ! superset fab list-users | awk '{print $2}' | grep -Fxq "$admin_username"; t
     --password "${SUPERSET_ADMIN_PASSWORD:?Set SUPERSET_ADMIN_PASSWORD in .env}"
 fi
 
+superset fab reset-password \
+  --username "$admin_username" \
+  --password "${SUPERSET_ADMIN_PASSWORD:?Set SUPERSET_ADMIN_PASSWORD in .env}"
+
 superset init
