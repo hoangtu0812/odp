@@ -136,6 +136,7 @@ services:
       OAUTH2_PROXY_OIDC_JWKS_URL: http://keycloak:8080/realms/open-source-data-platform/protocol/openid-connect/certs
       OAUTH2_PROXY_REDIRECT_URL: http://localhost:3000/oauth2/callback
       OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
+      OAUTH2_PROXY_SKIP_CLAIMS_FROM_PROFILE_URL: "true"
       OAUTH2_PROXY_REVERSE_PROXY: "true"
       OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
       OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
