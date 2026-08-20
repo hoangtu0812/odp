@@ -24,6 +24,10 @@ Open http://localhost:8001. Retrieve generated local credentials only when neede
 
 Record source owner, selected streams, cursor field, primary key, schedule, retention, and backfill method in the connector runbook.
 
+## Operate safely
+
+Check readiness with `abctl local status`. Airbyte runs outside the platform Compose project, so `docker compose down` for the platform does not stop it. `abctl local uninstall` removes the local Kind installation; use it only when you intentionally want to remove Airbyte runtime data.
+
 ## Operational checklist
 
 - Use a dedicated source identity with minimum permissions.

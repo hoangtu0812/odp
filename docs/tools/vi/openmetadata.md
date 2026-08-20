@@ -8,7 +8,7 @@ OpenMetadata là data catalog trung tâm: dataset description, owner, tag, gloss
 
 ## Triển khai Local Lab
 
-OpenMetadata cần server, ingestion, database và Elasticsearch nên chạy như stack riêng. Script sau tải file Compose PostgreSQL chính thức version-pinned, đổi cổng ingestion sang `8084` để không đụng Airflow, rồi khởi động stack:
+OpenMetadata cần server, ingestion, database và Elasticsearch nên chạy như stack riêng. Script sau tải file Compose PostgreSQL chính thức version-pinned, đổi cổng ingestion sang `8084` để không đụng Airflow và PostgreSQL sang `5433` để không đụng DWH, rồi khởi động stack:
 
 ```powershell
 .\scripts\start-openmetadata.ps1
@@ -27,3 +27,14 @@ Giao diện chuẩn là http://localhost:8585. Đảm bảo Docker Desktop có t
 5. Gán owner, description, glossary và SLA freshness cho curated mart.
 
 Không đưa source password vào tài liệu hay catalog export.
+
+## Dừng và khởi động lại
+
+OpenMetadata là Compose project riêng; để dừng riêng stack nhưng giữ volume:
+
+```powershell
+docker compose --project-name open-source-data-platform-openmetadata `
+  -f .runtime\openmetadata\docker-compose.yml down
+```
+
+Không thêm `--volumes` nếu chưa chủ động muốn bỏ catalog data.

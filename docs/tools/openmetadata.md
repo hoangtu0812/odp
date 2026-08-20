@@ -6,7 +6,7 @@ OpenMetadata is the planned central catalog for datasets, ownership, glossary te
 
 ## Deploy in the Local Lab
 
-OpenMetadata runs as an isolated, official version-pinned Compose stack because it includes a server, ingestion service, PostgreSQL, and Elasticsearch. The provided script downloads the upstream `1.12.6` PostgreSQL quickstart, moves its ingestion UI to port `8084` to avoid Airflow, and starts it under a separate Compose project.
+OpenMetadata runs as an isolated, official version-pinned Compose stack because it includes a server, ingestion service, PostgreSQL, and Elasticsearch. The provided script downloads the upstream `1.12.6` PostgreSQL quickstart, moves its ingestion UI to port `8084` to avoid Airflow and its database port to `5433` to avoid the platform warehouse, then starts it under a separate Compose project.
 
 ```powershell
 .\scripts\start-openmetadata.ps1
@@ -15,6 +15,15 @@ docker compose --project-name open-source-data-platform-openmetadata `
 ```
 
 Open the catalog at http://localhost:8585. Allocate at least 6 GB additional Docker memory before starting the stack. Before connecting services, define ownership, service accounts, metadata retention, authoritative catalog entities, and the Keycloak/Entra integration model.
+
+To stop only this catalog stack while retaining volumes:
+
+```powershell
+docker compose --project-name open-source-data-platform-openmetadata `
+  -f .runtime\openmetadata\docker-compose.yml down
+```
+
+Do not append `--volumes` unless the catalog data is deliberately being discarded.
 
 ## Integration order
 

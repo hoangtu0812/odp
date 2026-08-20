@@ -25,3 +25,7 @@ Mở http://localhost:8001. Lấy credential local bằng `abctl local credentia
 4. Sau sync thành công, trigger Airflow để chạy dbt.
 
 Theo dõi job lỗi, schema drift, freshness và volume. Mỗi connection phải có owner, retention và backfill runbook.
+
+## Vận hành an toàn
+
+Kiểm tra bằng `abctl local status`. Airbyte chạy ngoài Compose project chính nên `docker compose down` của nền tảng không dừng nó. `abctl local uninstall` xóa Kind installation local; chỉ dùng khi chủ động muốn xóa runtime data của Airbyte.
