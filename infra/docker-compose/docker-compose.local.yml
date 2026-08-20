@@ -128,7 +128,7 @@ services:
       OAUTH2_PROXY_COOKIE_SAMESITE: lax
       OAUTH2_PROXY_EMAIL_DOMAINS: "*"
       OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
-      OAUTH2_PROXY_OIDC_ISSUER_URL: http://keycloak:8080/realms/open-source-data-platform
+      OAUTH2_PROXY_OIDC_ISSUER_URL: http://localhost:8180/realms/open-source-data-platform
       OAUTH2_PROXY_SKIP_OIDC_DISCOVERY: "true"
       OAUTH2_PROXY_LOGIN_URL: http://localhost:8180/realms/open-source-data-platform/protocol/openid-connect/auth?kc_idp_hint=azure-entra
       OAUTH2_PROXY_REDEEM_URL: http://keycloak:8080/realms/open-source-data-platform/protocol/openid-connect/token
