@@ -274,6 +274,23 @@ services:
       - keycloak_data:/opt/keycloak/data
     restart: unless-stopped
 
+  keycloak-entra-config:
+    profiles: ["governance"]
+    image: quay.io/keycloak/keycloak:26.0.7
+    entrypoint: ["/bin/sh", "/scripts/configure-entra.sh"]
+    environment:
+      KEYCLOAK_ADMIN_USER: "${KEYCLOAK_ADMIN_USER:-admin}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD:-change-me-before-shared-use}"
+      AZURE_TENANT_ID: "${AZURE_TENANT_ID}"
+      AZURE_CLIENT_ID: "${AZURE_CLIENT_ID}"
+      AZURE_CLIENT_SECRET: "${AZURE_CLIENT_SECRET}"
+    volumes:
+      - ../../keycloak/scripts/configure-entra.sh:/scripts/configure-entra.sh:ro
+    depends_on:
+      keycloak:
+        condition: service_started
+    restart: "no"
+
   opa:
     profiles: ["governance"]
     image: openpolicyagent/opa:0.69.0-static

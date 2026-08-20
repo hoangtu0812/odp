@@ -11,7 +11,12 @@ h1 { margin: 8px 0 10px; font-size: clamp(2rem, 4vw, 3.25rem); }
 .card { min-height: 208px; padding: 22px; display: flex; flex-direction: column; border: 1px solid #244a74; border-radius: 15px; background: rgba(15, 43, 78, .76); color: #d8e7f7; text-decoration: none; box-shadow: 0 12px 26px rgba(0,0,0,.17); }
 .card.active { border-color: #2479bd; background: linear-gradient(145deg, rgba(26, 99, 160, .95), rgba(12, 50, 92, .95)); cursor: pointer; }
 a.card.active:hover { transform: translateY(-3px); border-color: #8cc9ff; }
-.icon { color: #90d0ff; font-size: 2rem; line-height: 1; }
+.app-logo { width: 40px; height: 40px; object-fit: contain; object-position: left center; filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .24)); }
+.fallback-logo { display: inline-grid; place-items: center; border-radius: 10px; color: #fff; font-size: .68rem; font-weight: 800; letter-spacing: -.04em; filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .24)); }
+.dbt-logo { background: #ff694b; text-transform: lowercase; }
+.opa-logo { background: #7d5cff; font-size: .62rem; letter-spacing: .03em; }
+.metadata-logo { background: #1f81c7; font-size: .7rem; letter-spacing: .03em; }
+.ai-logo { background: linear-gradient(135deg, #42d392, #2d8cff); font-size: .82rem; letter-spacing: .08em; }
 h2 { margin: 18px 0 8px; font-size: 1.05rem; color: #fff; }
 .card p { margin: 0; line-height: 1.5; font-size: .9rem; color: #c1d4e8; }
 small { margin-top: auto; padding-top: 18px; color: #78c6a5; font-weight: 600; }

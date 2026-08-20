@@ -1,151 +1,161 @@
-# Open Source Data Platform
+<div align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Open+Source+Data+Platform;Ingest+%7C+Transform+%7C+Govern+%7C+Observe;Build+practical+and+scalable+data+products" alt="Typing SVG" />
+</div>
 
-Local Lab theo roadmap cho vertical slice Maximo Work Order: ingestion → PostgreSQL DWH → dbt → Airflow → Superset.
+<h1 align="center">Open Source Data Platform</h1>
 
-Tài liệu đầy đủ về từng ứng dụng, cách vận hành và kiến trúc môi trường: [Platform Operations Guide](docs/platform-operations-guide.md).
+<p align="center">A self-hosted, modular data platform for turning operational data into governed, observable, and consumable data products.</p>
 
-## Phạm vi hiện tại
+<p align="center"><a href="README.vi.md">Tiếng Việt</a> · <a href="docs/roadmap.md">Roadmap</a> · <a href="#tool-guides">Tool guides</a></p>
 
-```text
-Maximo OSLc / fixture → raw → staging → core → mart → Superset
-                         ↓       dbt       ↑
-                      audit + watermark   Airflow
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=flat&logo=apacheairflow&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)
+![Apache Superset](https://img.shields.io/badge/Apache%20Superset-20A7C9?style=flat&logo=apachesuperset&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white)
+![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?style=flat&logo=keycloak&logoColor=white)
+![MinIO](https://img.shields.io/badge/MinIO-C72E49?style=flat&logo=minio&logoColor=white)
+
+## Purpose
+
+Open Source Data Platform provides a single Local Lab for the complete data-product lifecycle: connect to sources, land and model data, query it across warehouse and lakehouse storage, publish analytics, govern access, and operate the platform from measurable signals.
+
+The design is modular: each capability is independently documented and runs behind a Docker Compose profile. This makes the lab useful for development, demonstrations, integration testing, and progressive adoption.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    U[Platform users] --> E[Microsoft Entra ID]
+    E --> K[Keycloak\nSSO / identity broker]
+    K --> P[Data Platform Portal]
+    S[Data sources] --> I[Connectors / Airbyte]
+    I --> A[Apache Airflow\nOrchestration]
+    A --> R[PostgreSQL\nRaw and warehouse]
+    R --> D[dbt\nTests and data models]
+    D --> M[Curated marts]
+    M --> B[Apache Superset\nBI and dashboards]
+    R <--> T[Trino SQL]
+    O[MinIO object storage] <--> IC[Apache Iceberg catalog]
+    IC <--> T
+    K --> G[OPA\nPolicy decisions]
+    D --> OM[OpenMetadata\nCatalog and lineage]
+    A --> OM
+    T --> OM
+    X[Prometheus exporters] --> PR[Prometheus]
+    L[Container logs / Alloy] --> LO[Loki]
+    PR --> GR[Grafana]
+    LO --> GR
+    GR --> P
+    M --> AI[AI Data Assistant\nSemantic guardrails]
 ```
 
-Local Compose có các profile `ingestion`, `orchestration`, `analytics` và `tools`. Maximo live ingestion mặc định tắt để không tự gửi credential ra endpoint trước khi được xác thực.
+## Local Lab quick start
 
-## Điều kiện cần
+### 1. Prerequisites
 
-- Docker Desktop (hoặc Docker Engine) và Docker Compose v2
-- Git
+- Docker Desktop with at least 8 GB memory allocated.
+- Docker Compose v2.
+- Git and PowerShell on Windows.
 
-## Chạy Local Lab
-
-Tạo file cấu hình local:
+### 2. Create local configuration
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Đổi `POSTGRES_PASSWORD`, `DBT_PASSWORD`, Airflow secrets và Superset secrets trước khi dùng ngoài máy local. Khởi động PostgreSQL và migration:
+Set strong local passwords in `.env`. To enable the Entra broker, fill `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, and `AZURE_CLIENT_SECRET`; the values are never committed.
 
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml up -d postgres postgres-migrations
+In the Microsoft Entra application registration, add this redirect URI before first login:
+
+```text
+http://localhost:8180/realms/open-source-data-platform/broker/azure-entra/endpoint
 ```
 
-Xác minh connector bằng fixture cục bộ, rồi build mô hình dbt:
+Use your DNS hostname instead of `localhost` when the lab is accessed from another machine.
+
+### 3. Start the complete Local Lab
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile ingestion build maximo-ingest
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile ingestion run --rm maximo-ingest --fixture /app/sample_workorders.json
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile tools run --rm dbt run
+docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml `
+  --profile portal --profile analytics --profile orchestration `
+  --profile observability --profile lakehouse --profile governance --profile ai `
+  up -d --build
+```
+
+The one-time database, Superset, Airflow, MinIO, and Entra configuration jobs may take a few minutes. Check progress with:
+
+```powershell
+docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml ps
+docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml logs --tail=100 keycloak-entra-config trino
+```
+
+### 4. Open the applications
+
+| Application | Local address |
+| --- | --- |
+| Data Platform Portal | http://localhost:3000 |
+| Airbyte | http://localhost:8001 |
+| Airflow | http://localhost:8080 |
+| Superset | http://localhost:8088 |
+| Grafana | http://localhost:3001 |
+| Prometheus | http://localhost:9090 |
+| MinIO Console | http://localhost:9001 |
+| Trino | http://localhost:8081 |
+| Iceberg REST catalog | http://localhost:8181/v1/config |
+| OpenMetadata | http://localhost:8585 |
+| Keycloak | http://localhost:8180 |
+| OPA health | http://localhost:8182/health |
+| AI Data Assistant health | http://localhost:8010/health |
+
+### 5. Verify data services
+
+```powershell
+docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml exec postgres `
+  psql -U platform_admin -d dwh -c "select current_database(), now();"
+
+docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml exec -T trino `
+  trino --execute "SHOW CATALOGS"
+
 docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile tools run --rm dbt test
+
+& "$env:USERPROFILE\go\bin\abctl.exe" local status
+docker compose --project-name open-source-data-platform-openmetadata `
+  -f .runtime\openmetadata\docker-compose.yml ps
 ```
 
-Kiểm tra kết quả:
+### 6. Stop the lab
 
 ```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml exec postgres `
-  psql -U platform_admin -d dwh -c "select * from mart.workorder_summary order by reported_date;"
+docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml down
 ```
 
-Nếu container đã khởi tạo nhưng database `dwh` bị thiếu (ví dụ bootstrap từng bị gián đoạn), chạy lại bootstrap an toàn, không cần xóa volume:
+`down` stops containers while retaining named volumes. Do not add `--volumes` unless you explicitly intend to remove local platform data.
 
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml exec postgres `
-  bash /docker-entrypoint-initdb.d/01-create-databases.sh
-```
+## Tool guides
 
-## Chạy ingestion Maximo thật
+Each guide is available in English below and in [Vietnamese](docs/tools/vi/).
 
-Sau khi chủ hệ thống xác nhận endpoint Maximo REST MBO và mốc nạp ban đầu, chạy một lần thủ công:
+| Capability | Guide |
+| --- | --- |
+| Source ingestion and Airbyte | [Airbyte](docs/tools/airbyte.md) · [Connector framework](docs/tools/ingestion.md) |
+| Orchestration | [Apache Airflow](docs/tools/airflow.md) |
+| Modeling and quality | [dbt](docs/tools/dbt.md) |
+| Warehouse | [PostgreSQL](docs/tools/postgresql.md) |
+| Analytics | [Apache Superset](docs/tools/superset.md) |
+| Object storage and lakehouse | [MinIO](docs/tools/minio.md) · [Apache Iceberg](docs/tools/iceberg.md) · [Trino](docs/tools/trino.md) |
+| Identity and policies | [Keycloak and Entra SSO](docs/tools/keycloak.md) · [OPA](docs/tools/opa.md) |
+| Observability | [Prometheus](docs/tools/prometheus.md) · [Grafana](docs/tools/grafana.md) · [Loki and Alloy](docs/tools/loki.md) |
+| Catalog and lineage | [OpenMetadata](docs/tools/openmetadata.md) |
+| Platform entry point | [Portal](docs/tools/portal.md) |
+| Safe natural-language querying | [AI Data Assistant](docs/tools/ai-assistant.md) |
 
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile ingestion run --rm maximo-ingest
-```
+## Security notes
 
-Connector dùng header `maxauth` mặc định (hoặc Basic/API key khi được cấu hình), chỉ chấp nhận pagination URL cùng hostname, nạp incremental bằng `changedate`, và lưu trạng thái vào `platform_metadata.public.ingestion_audit`/`ingestion_watermark`. Với Maximo REST MBO, đặt `MAXIMO_API_STYLE=rest_mbo`, `MAXIMO_WORKORDER_PATH=/rest/mbo/workorder/` và `MAXIMO_INITIAL_SYNC_SINCE`. HTTPS là mặc định; HTTP nội bộ chỉ dùng khi được phê duyệt rõ ràng qua `MAXIMO_ALLOW_INSECURE_HTTP=true`.
+- Keep `.env`, credentials, tokens, certificates, and exported datasets out of Git.
+- The Local Lab is intentionally single-host and development-oriented. It is not an HA, backup/DR, or production deployment.
+- Portal status probes are convenience checks, not an authorization boundary. Use Keycloak, Entra, OPA, network controls, and application-level authorization for shared environments.
 
-Để giao việc cho Airflow sau khi lần chạy thủ công đã được xác nhận, cần phê duyệt riêng việc gửi credential qua HTTP nội bộ lặp lại mỗi 15 phút; sau đó thêm `MAXIMO_INGEST_ENABLED=true` vào `.env` rồi khởi động Airflow.
-
-## Airflow orchestration
-
-Airflow chạy Maximo ingestion (khi được bật), rồi `dbt run` và `dbt test` mỗi 15 phút cho DAG `maximo_dbt_pipeline`.
-
-Khởi động Airflow:
-
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile orchestration up -d --build
-```
-
-Mở `http://localhost:8080`. Local Lab dùng chế độ không yêu cầu đăng nhập và chỉ được expose trên máy phát triển. Không dùng cấu hình này cho TEST/Production.
-
-## Monitoring và portal
-
-Khởi động Grafana, Prometheus, exporters và portal:
-
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile observability --profile portal up -d --build
-```
-
-- Portal: `http://localhost:3000`
-- Grafana: `http://localhost:3001`
-- Prometheus: `http://localhost:9090`
-
-Chi tiết dashboard, metric và giới hạn Local Lab: [Phase 3 observability](docs/phase-3-observability.md).
-
-Kiểm tra lỗi import DAG và trigger một lần ngay lập tức:
-
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml exec airflow-api-server `
-  bash /opt/airflow/platform-entrypoint.sh dags list-import-errors
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml exec airflow-api-server `
-  bash /opt/airflow/platform-entrypoint.sh dags trigger maximo_dbt_pipeline
-```
-
-## Cấu trúc
-
-- `docker/postgres/init`: tạo các database metadata và schema DWH lúc PostgreSQL khởi tạo lần đầu.
-- `infra/docker-compose`: Docker Compose cho Local Lab.
-- `dbt/bsr_analytics`: transformations, tests và seed demo tùy chọn.
-- `ingestion/maximo`: connector OSLc incremental và fixture test.
-- `airflow/dags`: DAG orchestration.
-- `docker/superset`: image, cấu hình và bootstrap BI.
-- `infra/azure`: Bicep foundation và hướng dẫn Azure.
-- `docs`: tài liệu vận hành và kiến trúc.
-
-## BI
-
-Khởi động Superset:
-
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile analytics up -d --build superset
-```
-
-Mở `http://localhost:8088`. Metadata Superset nằm trong database `superset`; role `superset_bi` chỉ có quyền đọc schema `mart` của `dwh`. Tạo kết nối PostgreSQL trong Superset bằng host `postgres`, database `dwh`, user `superset_bi`, rồi chọn dataset `mart.workorder_summary`.
-
-## Data Platform Portal
-
-Portal launcher theo kiến trúc tham chiếu có link trực tiếp tới Airflow và Superset, đồng thời thể hiện các năng lực roadmap còn lại:
-
-```powershell
-docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml --profile portal up -d --build portal
-```
-
-Mở `http://localhost:3000`. Đây là launcher local; xác thực tập trung sẽ được thêm cùng Keycloak/Entra trong Phase 5.
-
-## Lakehouse foundation
-
-MinIO và Trino được thêm cho Local Lab. Xem [Phase 4 runbook](docs/phase-4-lakehouse.md) để khởi động và kiểm tra query `dwh.mart.workorder_summary` qua Trino.
-
-## Azure và CI
-
-- Bicep foundation: [infra/azure/README.md](infra/azure/README.md).
-- GitHub Actions kiểm tra Python và Docker Compose: `.github/workflows/validate.yml`.
-
-## Lưu ý vận hành
-
-- Không commit `.env`, secrets hoặc certificates.
-- Script khởi tạo PostgreSQL chỉ chạy khi volume còn mới. Để thêm schema/migration sau này, dùng thư mục `sql/migrations`.
-- Superset chỉ được cấp quyền đọc schema `mart`, không truy vấn trực tiếp `raw`.
-- Docker Compose là Local Lab/single-host; TEST/Production dùng nền tảng container có HA, private networking, SSO/RBAC và backup theo hướng dẫn Azure.
+For delivery sequencing, scope, and production evolution, see the dedicated [roadmap](docs/roadmap.md).

@@ -16,38 +16,21 @@
       </header>
 
       <section class="grid" aria-label="Ứng dụng nền tảng dữ liệu">
-        <a class="card active" href="http://localhost:8080" target="_blank" rel="noreferrer" data-health="/health/airflow">
-          <span class="icon">↻</span><h2>Orchestrator</h2><p>Airflow: lịch chạy, trạng thái và log pipeline.</p><small class="status">Đang kiểm tra</small>
-        </a>
-        <a class="card active" href="http://localhost:8088" target="_blank" rel="noreferrer" data-health="/health/superset">
-          <span class="icon">▦</span><h2>Report &amp; BI</h2><p>Superset: dataset mart và dashboard nghiệp vụ.</p><small class="status">Đang kiểm tra</small>
-        </a>
-        <div class="card active">
-          <span class="icon">⇄</span><h2>Ingestion</h2><p>Maximo Work Order incremental load, audit và watermark.</p><small>Đã sẵn sàng</small>
-        </div>
-        <div class="card active">
-          <span class="icon">◇</span><h2>Transformation</h2><p>dbt raw → staging → core → mart cùng data tests.</p><small>Đã sẵn sàng</small>
-        </div>
-        <a class="card active" href="http://localhost:9001" target="_blank" rel="noreferrer" data-health="/health/minio">
-          <span class="icon">◫</span><h2>Storage Management</h2><p>MinIO object storage; ADLS Gen2 là target cho môi trường Azure.</p><small class="status">Đang kiểm tra</small>
-        </a>
-        <a class="card active" href="http://localhost:8081" target="_blank" rel="noreferrer" data-health="/health/trino">
-          <span class="icon">⌕</span><h2>Query Cluster</h2><p>Trino SQL federation cho PostgreSQL DWH và lakehouse.</p><small class="status">Đang kiểm tra</small>
-        </a>
-        <div class="card">
-          <span class="icon">◎</span><h2>Data Governance</h2><p>Catalog, lineage, ownership và quality observability.</p><small>Phase 5</small>
-        </div>
-        <div class="card">
-          <span class="icon">⚿</span><h2>Policy Management</h2><p>SSO, RBAC và policy-as-code cho dữ liệu.</p><small>Phase 5</small>
-        </div>
-        <a class="card active" href="http://localhost:3001" target="_blank" rel="noreferrer" data-health="/health/grafana">
-          <span class="icon">◈</span><h2>System Monitoring</h2><p>Grafana dashboard và Prometheus metrics cho ứng dụng, DWH.</p><small class="status">Đang kiểm tra</small>
-        </a>
-        <div class="card">
-          <span class="icon">✦</span><h2>Text to Data</h2><p>AI assistant có semantic layer và quyền truy cập bảo vệ.</p><small>Phase 6</small>
-        </div>
+        <a class="card active" href="http://localhost:8080" target="_blank" rel="noreferrer" data-health="/health/airflow"><img class="app-logo" src="https://cdn.simpleicons.org/apacheairflow/17A2B8" alt="Airflow" /><h2>Apache Airflow</h2><p>Lịch chạy, trạng thái và log pipeline.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8088" target="_blank" rel="noreferrer" data-health="/health/superset"><img class="app-logo" src="https://cdn.simpleicons.org/apachesuperset/20A7C9" alt="Superset" /><h2>Apache Superset</h2><p>Khám phá dữ liệu, dataset mart và dashboard.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8001" target="_blank" rel="noreferrer" data-health="/health/airbyte"><img class="app-logo" src="https://cdn.simpleicons.org/airbyte/615EFF" alt="Airbyte" /><h2>Airbyte</h2><p>Quản lý connector và đồng bộ dữ liệu nguồn.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="https://docs.getdbt.com/" target="_blank" rel="noreferrer"><span class="app-logo fallback-logo dbt-logo" role="img" aria-label="dbt">dbt</span><h2>dbt</h2><p>Biến đổi raw → staging → core → mart cùng data tests.</p><small>Transformation</small></a>
+        <a class="card active" href="http://localhost:9001" target="_blank" rel="noreferrer" data-health="/health/minio"><img class="app-logo" src="https://cdn.simpleicons.org/minio/C72E49" alt="MinIO" /><h2>MinIO</h2><p>Object storage tương thích S3 cho dữ liệu lakehouse.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8081" target="_blank" rel="noreferrer" data-health="/health/trino"><img class="app-logo" src="https://cdn.simpleicons.org/trino/DD00A1" alt="Trino" /><h2>Trino</h2><p>SQL federation cho PostgreSQL DWH và Iceberg lakehouse.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8180" target="_blank" rel="noreferrer" data-health="/health/keycloak"><img class="app-logo" src="https://cdn.simpleicons.org/keycloak/4D4D4D" alt="Keycloak" /><h2>Keycloak + Entra</h2><p>SSO, danh tính và vai trò truy cập nền tảng.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8182/health" target="_blank" rel="noreferrer" data-health="/health/opa"><span class="app-logo fallback-logo opa-logo" role="img" aria-label="Open Policy Agent">OPA</span><h2>Open Policy Agent</h2><p>Policy-as-code cho phân quyền dữ liệu.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8585" target="_blank" rel="noreferrer" data-health="/health/openmetadata"><span class="app-logo fallback-logo metadata-logo" role="img" aria-label="OpenMetadata">OM</span><h2>OpenMetadata</h2><p>Catalog, lineage, ownership và data discovery.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:3001" target="_blank" rel="noreferrer" data-health="/health/grafana"><img class="app-logo" src="https://cdn.simpleicons.org/grafana/F46800" alt="Grafana" /><h2>Grafana</h2><p>Dashboard vận hành, chỉ số và cảnh báo.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:9090" target="_blank" rel="noreferrer" data-health="/health/prometheus"><img class="app-logo" src="https://cdn.simpleicons.org/prometheus/E6522C" alt="Prometheus" /><h2>Prometheus + Loki</h2><p>Thu thập metrics, logs và cảnh báo dịch vụ.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8181/v1/config" target="_blank" rel="noreferrer" data-health="/health/iceberg"><img class="app-logo" src="https://cdn.simpleicons.org/apache/EA1D2C" alt="Apache Iceberg" /><h2>Apache Iceberg</h2><p>REST catalog và bảng dữ liệu mở cho lakehouse.</p><small class="status">Đang kiểm tra</small></a>
+        <a class="card active" href="http://localhost:8010/health" target="_blank" rel="noreferrer" data-health="/health/ai"><span class="app-logo fallback-logo ai-logo" role="img" aria-label="AI Data Assistant">AI</span><h2>AI Data Assistant</h2><p>Semantic query có guardrail để truy vấn dữ liệu an toàn.</p><small class="status">Đang kiểm tra</small></a>
       </section>
-      <footer>Local Lab · Không dùng endpoint này như lớp xác thực production.</footer>
+      <footer>Local Lab · Các thẻ hiển thị trạng thái được kiểm tra tự động. SSO được quản lý bởi Keycloak.</footer>
     </main>
     <script src="app.js"></script>
   </body>

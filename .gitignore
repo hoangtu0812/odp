@@ -16,6 +16,7 @@ airflow/logs/
 data/
 secrets/
 certificates/
+.runtime/
 *.key
 *.pem
 
