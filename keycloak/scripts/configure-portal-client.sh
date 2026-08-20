@@ -11,13 +11,15 @@ until /opt/keycloak/bin/kcadm.sh config credentials \
   sleep 3
 done
 
+/opt/keycloak/bin/kcadm.sh update "realms/$realm" -s 'displayName=Loop Data Lab (LDL)' >/dev/null
+
 client_uuid="$(/opt/keycloak/bin/kcadm.sh get clients -r "$realm" -q clientId="$client_id" \
   | sed -n 's/.*"id" : "\([^"]*\)".*/\1/p' | head -1)"
 
 if [ -z "$client_uuid" ]; then
   /opt/keycloak/bin/kcadm.sh create clients -r "$realm" \
     -s clientId="$client_id" \
-    -s name="Open Source Data Platform Portal" \
+    -s name="Loop Data Lab Portal" \
     -s enabled=true \
     -s protocol=openid-connect \
     -s publicClient=false \
@@ -28,6 +30,7 @@ if [ -z "$client_uuid" ]; then
 fi
 
 /opt/keycloak/bin/kcadm.sh update "clients/$client_uuid" -r "$realm" \
+  -s name="Loop Data Lab Portal" \
   -s publicClient=false \
   -s standardFlowEnabled=true \
   -s directAccessGrantsEnabled=false \

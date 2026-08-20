@@ -1,0 +1,16 @@
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  filter: drop-shadow(0 0 11px rgba(105, 244, 176, .24));
+}
+
+.brand b {
+  color: var(--mint);
+  font-weight: 700;
+}
+
+.portal-brand img {
+  width: 42px;
+  height: 42px;
+  filter: drop-shadow(0 0 11px rgba(105, 244, 176, .24));
+}

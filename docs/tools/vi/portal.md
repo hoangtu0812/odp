@@ -1,10 +1,10 @@
-# Data Platform Portal
+# Loop Data Lab Portal
 
 [English](../portal.md)
 
 ## Dùng để làm gì?
 
-Trang gốc công khai là landing page **Data Lab**: giao diện theo phong cách technical lab, animation mô phỏng thiết bị/phòng lab và nút **Continue with Azure Entra**. Sau xác thực, Portal dùng cùng phong cách giao diện, có logo ứng dụng, link truy cập và health status.
+Trang gốc công khai là landing page **Loop Data Lab (LDL)**: giao diện theo phong cách technical lab, animation mô phỏng thiết bị/phòng lab và nút **Continue with Azure Entra**. Sau xác thực, Portal dùng cùng phong cách giao diện, có logo ứng dụng, link truy cập và health status.
 
 `/` là công khai; `/portal/` chỉ mở sau khi đăng nhập Azure Entra thông qua Keycloak và OAuth2 Proxy. Khi callback thành công, trình duyệt có một session cookie local dạng HTTP-only. Nút Sign out trên Portal xoá session này.
 

@@ -2,7 +2,7 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Open+Source+Data+Platform;Ingest+%7C+Transform+%7C+Govern+%7C+Observe;Build+practical+and+scalable+data+products" alt="Typing SVG" />
 </div>
 
-<h1 align="center">Open Source Data Platform</h1>
+<h1 align="center">Loop Data Lab (LDL)</h1>
 
 <p align="center">A self-hosted, modular data platform for turning operational data into governed, observable, and consumable data products.</p>
 
@@ -20,7 +20,7 @@
 
 ## Purpose
 
-Open Source Data Platform provides a single Local Lab for the complete data-product lifecycle: connect to sources, land and model data, query it across warehouse and lakehouse storage, publish analytics, govern access, and operate the platform from measurable signals.
+Loop Data Lab (LDL) provides a single Local Lab for the complete data-product lifecycle: connect to sources, land and model data, query it across warehouse and lakehouse storage, publish analytics, govern access, and operate the platform from measurable signals.
 
 The design is modular: each capability is independently documented and runs behind a Docker Compose profile. This makes the lab useful for development, demonstrations, integration testing, and progressive adoption.
 
@@ -30,7 +30,7 @@ The design is modular: each capability is independently documented and runs behi
 flowchart LR
     U[Platform users] --> E[Microsoft Entra ID]
     E --> K[Keycloak\nSSO / identity broker]
-    K --> P[Data Platform Portal]
+    K --> P[Loop Data Lab Portal]
     S[Data sources] --> I[Connectors / Airbyte]
     I --> A[Apache Airflow\nOrchestration]
     A --> R[PostgreSQL\nRaw and warehouse]
@@ -94,11 +94,11 @@ docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml 
 
 ### 4. Open the applications
 
-`http://localhost:3000/` is the public Data Lab landing page. Select **Continue with Azure Entra** to enter the protected Portal; direct access to `/portal/` starts the same Azure sign-in flow. The other products keep their own login until their native Keycloak OIDC integration is enabled.
+`http://localhost:3000/` is the public Loop Data Lab landing page. Select **Continue with Azure Entra** to enter the protected Portal; direct access to `/portal/` starts the same Azure sign-in flow. The other products keep their own login until their native Keycloak OIDC integration is enabled.
 
 | Application | Local address |
 | --- | --- |
-| Data Platform Portal | http://localhost:3000 |
+| Loop Data Lab Portal | http://localhost:3000 |
 | Airbyte | http://localhost:8001 |
 | Airflow | http://localhost:8080 |
 | Superset | http://localhost:8088 |

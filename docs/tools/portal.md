@@ -1,8 +1,8 @@
-# Data Platform Portal
+# Loop Data Lab Portal
 
 ## Role
 
-The public root page is a Data Lab landing page. It introduces the platform with a technical-lab visual language, animated instrumentation, and a **Continue with Azure Entra** button. The protected portal uses the same interface language, application logos, direct links, and backend health probes so operators can see whether core services are ready.
+The public root page is a Loop Data Lab (LDL) landing page. It introduces the platform with a technical-lab visual language, animated instrumentation, and a **Continue with Azure Entra** button. The protected portal uses the same interface language, application logos, direct links, and backend health probes so operators can see whether core services are ready.
 
 `/` is public; `/portal/` requires a successful Azure Entra sign-in through Keycloak and OAuth2 Proxy. The browser receives a secure, HTTP-only local session cookie after the callback. Signing out from the Portal removes this Portal session.
 

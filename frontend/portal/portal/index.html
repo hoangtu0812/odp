@@ -3,24 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Lab · Portal</title>
+    <title>Loop Data Lab (LDL) · Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../branding.css" />
   </head>
   <body>
     <div class="grid-noise" aria-hidden="true"></div>
     <aside class="sidebar">
-      <a class="portal-brand" href="/"><span>DL</span><b>DATA<br />LAB</b></a>
+      <a class="portal-brand" href="/"><img src="/assets/ldl-logo.svg" alt="" /><b>LOOP<br />DATA LAB</b></a>
       <nav><a class="selected" href="#workbench"><i>⌘</i> Workbench</a><a href="#systems"><i>◌</i> System map</a><a href="/oauth2/sign_out?rd=/" class="logout"><i>↗</i> Sign out</a></nav>
       <div class="side-foot"><span class="live-dot"></span> ENTRA SESSION<br /><b>VERIFIED ACCESS</b></div>
     </aside>
     <main>
-      <header class="portal-header"><div><p class="micro">OPEN SOURCE DATA PLATFORM / DATA LAB</p><h1>Workbench<span>.</span></h1></div><div class="header-status"><span class="live-dot"></span><div><small>SYSTEM PULSE</small><strong id="health-summary">Checking lab services…</strong></div></div></header>
+      <header class="portal-header"><div><p class="micro">LOOP DATA LAB (LDL) / LOCAL LAB</p><h1>Workbench<span>.</span></h1></div><div class="header-status"><span class="live-dot"></span><div><small>SYSTEM PULSE</small><strong id="health-summary">Checking lab services…</strong></div></div></header>
       <section class="signal-strip"><div><span>IDENTITY</span><b>Azure Entra via Keycloak</b></div><div><span>MODE</span><b>Local Lab</b></div><div><span>DATA PLANE</span><b>Online</b></div><div><span>ACCESS</span><b>Portal protected</b></div></section>
       <section class="section-title" id="workbench"><div><p class="micro">// APPLICATION RACK</p><h2>Choose a station</h2></div><p>Launch a tool in a new tab. A green status means its local endpoint is responding.</p></section>
-      <section class="tool-grid" aria-label="Data Lab applications">
+      <section class="tool-grid" aria-label="Loop Data Lab applications">
         <a class="tool-card accent-blue" href="http://localhost:8080" target="_blank" rel="noreferrer" data-health="/health/airflow"><span class="tool-index">01</span><img src="https://cdn.simpleicons.org/apacheairflow/17A2B8" alt="" /><h3>Airflow</h3><p>Orchestrate pipeline runs, schedules and logs.</p><small class="status">Checking</small><b class="launch">OPEN ↗</b></a>
         <a class="tool-card accent-pink" href="http://localhost:8001" target="_blank" rel="noreferrer" data-health="/health/airbyte"><span class="tool-index">02</span><img src="https://cdn.simpleicons.org/airbyte/615EFF" alt="" /><h3>Airbyte</h3><p>Build and operate source-to-destination syncs.</p><small class="status">Checking</small><b class="launch">OPEN ↗</b></a>
         <a class="tool-card accent-orange" href="http://localhost:8088" target="_blank" rel="noreferrer" data-health="/health/superset"><span class="tool-index">03</span><img src="https://cdn.simpleicons.org/apachesuperset/20A7C9" alt="" /><h3>Superset</h3><p>Explore trusted datasets and publish analysis.</p><small class="status">Checking</small><b class="launch">OPEN ↗</b></a>
@@ -31,7 +32,7 @@
         <a class="tool-card accent-cyan" href="http://localhost:8180" target="_blank" rel="noreferrer" data-health="/health/keycloak"><span class="tool-index">08</span><img src="https://cdn.simpleicons.org/keycloak/5FA8FF" alt="" /><h3>Identity</h3><p>Manage Keycloak realm, Entra federation and roles.</p><small class="status">Checking</small><b class="launch">OPEN ↗</b></a>
       </section>
       <section class="systems" id="systems"><div><p class="micro">// SUPPORTING SYSTEMS</p><h2>Lab control plane</h2></div><div class="system-links"><a href="https://docs.getdbt.com/" target="_blank" rel="noreferrer">dbt <span>Transformation ↗</span></a><a href="http://localhost:9090" target="_blank" rel="noreferrer" data-health="/health/prometheus">Prometheus + Loki <span class="status">Checking</span></a><a href="http://localhost:8182/health" target="_blank" rel="noreferrer" data-health="/health/opa">Open Policy Agent <span class="status">Checking</span></a><a href="http://localhost:8181/v1/config" target="_blank" rel="noreferrer" data-health="/health/iceberg">Apache Iceberg <span class="status">Checking</span></a><a href="http://localhost:8010/health" target="_blank" rel="noreferrer" data-health="/health/ai">AI Data Assistant <span class="status">Checking</span></a></div></section>
-      <footer>DATA LAB · LOCAL ENVIRONMENT · <a href="/oauth2/sign_out?rd=/">END SESSION</a></footer>
+      <footer>LOOP DATA LAB (LDL) · LOCAL ENVIRONMENT · <a href="/oauth2/sign_out?rd=/">END SESSION</a></footer>
     </main>
     <script src="app.js"></script>
   </body>

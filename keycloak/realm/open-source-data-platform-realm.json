@@ -1,7 +1,7 @@
 {
   "realm": "open-source-data-platform",
   "enabled": true,
-  "displayName": "Open Source Data Platform",
+  "displayName": "Loop Data Lab (LDL)",
   "roles": {
     "realm": [
       {"name": "platform_admin", "description": "Platform administration"},
@@ -13,7 +13,7 @@
   "clients": [
     {
       "clientId": "platform-portal",
-      "name": "Open Source Data Platform Portal",
+      "name": "Loop Data Lab Portal",
       "publicClient": false,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,

@@ -2,7 +2,7 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Open+Source+Data+Platform;Thu+th%E1%BA%ADp+%7C+Bi%E1%BA%BFn+%C4%91%E1%BB%95i+%7C+Qu%E1%BA%A3n+tr%E1%BB%8B+%7C+Gi%C3%A1m+s%C3%A1t;X%C3%A2y+d%E1%BB%B1ng+data+product+thi%E1%BA%BFt+th%E1%BB%B1c" alt="Typing SVG" />
 </div>
 
-<h1 align="center">Open Source Data Platform</h1>
+<h1 align="center">Loop Data Lab (LDL)</h1>
 
 <p align="center">Nền tảng dữ liệu tự triển khai, theo kiến trúc mô-đun, biến dữ liệu vận hành thành data product có quản trị và giám sát.</p>
 
@@ -18,7 +18,7 @@
 
 ## Mục đích nền tảng
 
-Open Source Data Platform cung cấp Local Lab cho toàn bộ vòng đời data product: kết nối nguồn, lưu dữ liệu, biến đổi và kiểm thử, truy vấn warehouse/lakehouse, xuất bản phân tích, quản trị quyền truy cập, và giám sát vận hành.
+Loop Data Lab (LDL) cung cấp Local Lab cho toàn bộ vòng đời data product: kết nối nguồn, lưu dữ liệu, biến đổi và kiểm thử, truy vấn warehouse/lakehouse, xuất bản phân tích, quản trị quyền truy cập, và giám sát vận hành.
 
 Mỗi năng lực chạy trong Docker Compose profile riêng và có tài liệu độc lập; phù hợp cho phát triển, demo, kiểm thử tích hợp và mở rộng dần.
 
@@ -28,7 +28,7 @@ Mỗi năng lực chạy trong Docker Compose profile riêng và có tài liệu
 flowchart LR
     U[Người dùng] --> E[Microsoft Entra ID]
     E --> K[Keycloak\nSSO / identity broker]
-    K --> P[Data Platform Portal]
+    K --> P[Loop Data Lab Portal]
     S[Nguồn dữ liệu] --> I[Connectors / Airbyte] --> A[Apache Airflow]
     A --> R[PostgreSQL Warehouse] --> D[dbt models + tests] --> M[Curated marts] --> B[Apache Superset]
     R <--> T[Trino SQL]
@@ -80,11 +80,11 @@ docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml 
 
 ### 4. Mở ứng dụng
 
-`http://localhost:3000/` là landing page Data Lab công khai. Chọn **Continue with Azure Entra** để vào Portal được bảo vệ; truy cập trực tiếp `/portal/` cũng khởi động đúng luồng Azure. Các ứng dụng còn lại vẫn dùng đăng nhập riêng cho đến khi được cấu hình native Keycloak OIDC.
+`http://localhost:3000/` là landing page Loop Data Lab công khai. Chọn **Continue with Azure Entra** để vào Portal được bảo vệ; truy cập trực tiếp `/portal/` cũng khởi động đúng luồng Azure. Các ứng dụng còn lại vẫn dùng đăng nhập riêng cho đến khi được cấu hình native Keycloak OIDC.
 
 | Ứng dụng | Địa chỉ local |
 | --- | --- |
-| Data Platform Portal | http://localhost:3000 |
+| Loop Data Lab Portal | http://localhost:3000 |
 | Airbyte | http://localhost:8001 |
 | Airflow | http://localhost:8080 |
 | Superset | http://localhost:8088 |
