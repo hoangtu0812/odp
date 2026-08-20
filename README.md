@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Open+Source+Data+Platform;Ingest+%7C+Transform+%7C+Govern+%7C+Observe;Build+practical+and+scalable+data+products" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Loop+Data+Lab+(LDL);Ingest+%7C+Transform+%7C+Govern+%7C+Observe;Build+practical+and+scalable+data+products" alt="Typing SVG" />
 </div>
 
 <h1 align="center">Loop Data Lab (LDL)</h1>
@@ -51,6 +51,18 @@ flowchart LR
     GR --> P
     M --> AI[AI Data Assistant\nSemantic guardrails]
 ```
+
+## Product walkthrough
+
+<p align="center">
+  <img src="docs/assets/ldl-landing.png" alt="Loop Data Lab landing page" width="900" />
+</p>
+
+<p align="center">
+  <img src="docs/assets/ldl-workbench.png" alt="Loop Data Lab protected workbench and application rack" width="900" />
+</p>
+
+The flow is **Landing page → Azure Entra sign-in → protected Workbench → application station**. Application health values are live and therefore can differ from the captured interface reference.
 
 ## Local Lab quick start
 

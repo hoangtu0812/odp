@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Open+Source+Data+Platform;Thu+th%E1%BA%ADp+%7C+Bi%E1%BA%BFn+%C4%91%E1%BB%95i+%7C+Qu%E1%BA%A3n+tr%E1%BB%8B+%7C+Gi%C3%A1m+s%C3%A1t;X%C3%A2y+d%E1%BB%B1ng+data+product+thi%E1%BA%BFt+th%E1%BB%B1c" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=Loop+Data+Lab+(LDL);Thu+th%E1%BA%ADp+%7C+Bi%E1%BA%BFn+%C4%91%E1%BB%95i+%7C+Qu%E1%BA%A3n+tr%E1%BB%8B+%7C+Gi%C3%A1m+s%C3%A1t;X%C3%A2y+d%E1%BB%B1ng+data+product+thi%E1%BA%BFt+th%E1%BB%B1c" alt="Typing SVG" />
 </div>
 
 <h1 align="center">Loop Data Lab (LDL)</h1>
@@ -38,6 +38,18 @@ flowchart LR
     L[Logs / Alloy] --> LO[Loki] --> GR
     M --> AI[AI Data Assistant]
 ```
+
+## Hành trình sản phẩm
+
+<p align="center">
+  <img src="docs/assets/ldl-landing.png" alt="Landing page Loop Data Lab" width="900" />
+</p>
+
+<p align="center">
+  <img src="docs/assets/ldl-workbench.png" alt="Workbench được bảo vệ và application rack của Loop Data Lab" width="900" />
+</p>
+
+Luồng sử dụng là **Landing page → Azure Entra sign-in → Workbench được bảo vệ → application station**. Trạng thái health của ứng dụng là dữ liệu live nên có thể khác ảnh giao diện tham chiếu.
 
 ## Chạy đầy đủ Local Lab
 
