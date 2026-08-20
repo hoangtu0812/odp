@@ -1,37 +1,54 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Open Source Data Platform</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="theme-color" content="#061016" />
+    <title>Data Lab · Open Source Data Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="landing.css" />
   </head>
-  <body>
-    <main class="page-shell">
-      <header>
-        <p class="eyebrow">OPEN SOURCE DATA PLATFORM</p>
-        <h1>Data Platform Portal</h1>
-        <p class="subtitle">Điểm truy cập thống nhất cho dữ liệu, vận hành và phân tích.</p>
-        <p class="health-note" id="health-summary" aria-live="polite">Đang kiểm tra trạng thái dịch vụ…</p>
-      </header>
-
-      <section class="grid" aria-label="Ứng dụng nền tảng dữ liệu">
-        <a class="card active" href="http://localhost:8080" target="_blank" rel="noreferrer" data-health="/health/airflow"><img class="app-logo" src="https://cdn.simpleicons.org/apacheairflow/17A2B8" alt="Airflow" /><h2>Apache Airflow</h2><p>Lịch chạy, trạng thái và log pipeline.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8088" target="_blank" rel="noreferrer" data-health="/health/superset"><img class="app-logo" src="https://cdn.simpleicons.org/apachesuperset/20A7C9" alt="Superset" /><h2>Apache Superset</h2><p>Khám phá dữ liệu, dataset mart và dashboard.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8001" target="_blank" rel="noreferrer" data-health="/health/airbyte"><img class="app-logo" src="https://cdn.simpleicons.org/airbyte/615EFF" alt="Airbyte" /><h2>Airbyte</h2><p>Quản lý connector và đồng bộ dữ liệu nguồn.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="https://docs.getdbt.com/" target="_blank" rel="noreferrer"><span class="app-logo fallback-logo dbt-logo" role="img" aria-label="dbt">dbt</span><h2>dbt</h2><p>Biến đổi raw → staging → core → mart cùng data tests.</p><small>Transformation</small></a>
-        <a class="card active" href="http://localhost:9001" target="_blank" rel="noreferrer" data-health="/health/minio"><img class="app-logo" src="https://cdn.simpleicons.org/minio/C72E49" alt="MinIO" /><h2>MinIO</h2><p>Object storage tương thích S3 cho dữ liệu lakehouse.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8081" target="_blank" rel="noreferrer" data-health="/health/trino"><img class="app-logo" src="https://cdn.simpleicons.org/trino/DD00A1" alt="Trino" /><h2>Trino</h2><p>SQL federation cho PostgreSQL DWH và Iceberg lakehouse.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8180" target="_blank" rel="noreferrer" data-health="/health/keycloak"><img class="app-logo" src="https://cdn.simpleicons.org/keycloak/4D4D4D" alt="Keycloak" /><h2>Keycloak + Entra</h2><p>SSO, danh tính và vai trò truy cập nền tảng.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8182/health" target="_blank" rel="noreferrer" data-health="/health/opa"><span class="app-logo fallback-logo opa-logo" role="img" aria-label="Open Policy Agent">OPA</span><h2>Open Policy Agent</h2><p>Policy-as-code cho phân quyền dữ liệu.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8585" target="_blank" rel="noreferrer" data-health="/health/openmetadata"><span class="app-logo fallback-logo metadata-logo" role="img" aria-label="OpenMetadata">OM</span><h2>OpenMetadata</h2><p>Catalog, lineage, ownership và data discovery.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:3001" target="_blank" rel="noreferrer" data-health="/health/grafana"><img class="app-logo" src="https://cdn.simpleicons.org/grafana/F46800" alt="Grafana" /><h2>Grafana</h2><p>Dashboard vận hành, chỉ số và cảnh báo.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:9090" target="_blank" rel="noreferrer" data-health="/health/prometheus"><img class="app-logo" src="https://cdn.simpleicons.org/prometheus/E6522C" alt="Prometheus" /><h2>Prometheus + Loki</h2><p>Thu thập metrics, logs và cảnh báo dịch vụ.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8181/v1/config" target="_blank" rel="noreferrer" data-health="/health/iceberg"><img class="app-logo" src="https://cdn.simpleicons.org/apache/EA1D2C" alt="Apache Iceberg" /><h2>Apache Iceberg</h2><p>REST catalog và bảng dữ liệu mở cho lakehouse.</p><small class="status">Đang kiểm tra</small></a>
-        <a class="card active" href="http://localhost:8010/health" target="_blank" rel="noreferrer" data-health="/health/ai"><span class="app-logo fallback-logo ai-logo" role="img" aria-label="AI Data Assistant">AI</span><h2>AI Data Assistant</h2><p>Semantic query có guardrail để truy vấn dữ liệu an toàn.</p><small class="status">Đang kiểm tra</small></a>
+  <body class="landing">
+    <div class="scanlines" aria-hidden="true"></div>
+    <nav class="topbar">
+      <a class="brand" href="/" aria-label="Data Lab home"><span class="brand-mark">DL</span><span>DATA LAB</span></a>
+      <a class="nav-link" href="#capabilities">Capabilities <span>↘</span></a>
+    </nav>
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="kicker"><span class="pulse"></span> OPEN SOURCE DATA PLATFORM / LOCAL LAB</p>
+          <h1>Turn operational<br /><em>signals</em> into insight.</h1>
+          <p class="lede">A controlled workspace for ingestion, transformation, analytics, governance and observability — built for teams that want to understand every layer of their data.</p>
+          <div class="hero-actions">
+            <a class="login-button" href="/oauth2/start?rd=/portal/"><span class="azure-dot"></span> Continue with Azure Entra <b>→</b></a>
+            <a class="text-button" href="#capabilities">Explore the lab <span>↓</span></a>
+          </div>
+          <p class="access-note">Secure entry point · Azure identity required for the Portal</p>
+        </div>
+        <div class="lab-visual" aria-label="Animated data pipeline visualisation">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+          <div class="core"><span>DATA</span><strong>LAB</strong><i></i></div>
+          <div class="node node-source"><small>01</small><b>INGEST</b><span>sources online</span></div>
+          <div class="node node-model"><small>02</small><b>MODEL</b><span>tests passing</span></div>
+          <div class="node node-serve"><small>03</small><b>SERVE</b><span>signals ready</span></div>
+          <div class="data-beam beam-a"></div><div class="data-beam beam-b"></div><div class="data-beam beam-c"></div>
+          <div class="telemetry telemetry-a">LATENCY <b>12ms</b></div>
+          <div class="telemetry telemetry-b">PIPELINES <b>ACTIVE</b></div>
+        </div>
       </section>
-      <footer>Local Lab · Các thẻ hiển thị trạng thái được kiểm tra tự động. SSO được quản lý bởi Keycloak.</footer>
+      <section class="capabilities" id="capabilities">
+        <div class="section-heading"><p class="kicker">// THE WORKBENCH</p><h2>One lab. Every data discipline.</h2></div>
+        <div class="capability-grid">
+          <article><span class="number">01</span><h3>Acquire</h3><p>Bring source systems into a governed data plane with observable, repeatable ingestion.</p><code>Airbyte · Airflow</code></article>
+          <article><span class="number">02</span><h3>Refine</h3><p>Turn raw operational events into trusted, tested and documented data products.</p><code>dbt · PostgreSQL · Iceberg</code></article>
+          <article><span class="number">03</span><h3>Explore</h3><p>Equip analysts and operators with fast queries, dashboards and an assisted data interface.</p><code>Trino · Superset · AI</code></article>
+          <article><span class="number">04</span><h3>Control</h3><p>Observe the platform, catalogue its assets and make access policy explicit.</p><code>Grafana · OpenMetadata · OPA</code></article>
+        </div>
+      </section>
     </main>
-    <script src="app.js"></script>
+    <footer><span>OPEN SOURCE DATA PLATFORM</span><span>DATA LAB / v1.0</span><span>IDENTITY · ENTRA + KEYCLOAK</span></footer>
   </body>
 </html>

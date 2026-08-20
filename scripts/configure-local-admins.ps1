@@ -30,6 +30,12 @@ function New-FernetKey {
   return [Convert]::ToBase64String($bytes).Replace('+', '-').Replace('/', '_')
 }
 
+function New-UrlSafeSecret([int]$ByteCount = 32) {
+  $bytes = [byte[]]::new($ByteCount)
+  [System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
+  return [Convert]::ToBase64String($bytes).Replace('+', '-').Replace('/', '_').TrimEnd('=')
+}
+
 function Set-EnvValue([string]$Name, [string]$Value) {
   $escapedName = [regex]::Escape($Name)
   $script:envLines = @($script:envLines | ForEach-Object {
@@ -68,6 +74,8 @@ $values = [ordered]@{
   AIRFLOW_FERNET_KEY            = New-FernetKey
   AIRFLOW_API_SECRET_KEY        = New-RandomHex
   AIRFLOW_JWT_SECRET            = New-RandomHex
+  PORTAL_OIDC_CLIENT_SECRET     = New-RandomHex
+  OAUTH2_PROXY_COOKIE_SECRET    = New-UrlSafeSecret
   AUTHORIZER_ADMIN_PRINCIPALS   = "[$Username]"
   AUTHORIZER_PRINCIPAL_DOMAIN   = 'bsr.com.vn'
 }

@@ -94,6 +94,8 @@ docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml 
 
 ### 4. Open the applications
 
+`http://localhost:3000/` is the public Data Lab landing page. Select **Continue with Azure Entra** to enter the protected Portal; direct access to `/portal/` starts the same Azure sign-in flow. The other products keep their own login until their native Keycloak OIDC integration is enabled.
+
 | Application | Local address |
 | --- | --- |
 | Data Platform Portal | http://localhost:3000 |

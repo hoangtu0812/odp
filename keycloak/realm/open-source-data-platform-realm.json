@@ -14,10 +14,10 @@
     {
       "clientId": "platform-portal",
       "name": "Open Source Data Platform Portal",
-      "publicClient": true,
+      "publicClient": false,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "redirectUris": ["http://localhost:3000/*"],
+      "redirectUris": ["http://localhost:3000/oauth2/callback"],
       "webOrigins": ["http://localhost:3000"]
     }
   ]

@@ -80,6 +80,8 @@ docker compose --env-file .env -f infra/docker-compose/docker-compose.local.yml 
 
 ### 4. Mở ứng dụng
 
+`http://localhost:3000/` là landing page Data Lab công khai. Chọn **Continue with Azure Entra** để vào Portal được bảo vệ; truy cập trực tiếp `/portal/` cũng khởi động đúng luồng Azure. Các ứng dụng còn lại vẫn dùng đăng nhập riêng cho đến khi được cấu hình native Keycloak OIDC.
+
 | Ứng dụng | Địa chỉ local |
 | --- | --- |
 | Data Platform Portal | http://localhost:3000 |

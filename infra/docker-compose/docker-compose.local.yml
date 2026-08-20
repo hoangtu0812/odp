@@ -111,6 +111,43 @@ services:
     image: bsr-data-portal:1.0.0
     ports:
       - "${PORTAL_PORT:-3000}:80"
+    depends_on:
+      oauth2-proxy:
+        condition: service_started
+    restart: unless-stopped
+
+  oauth2-proxy:
+    profiles: ["portal"]
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3
+    environment:
+      OAUTH2_PROXY_PROVIDER: keycloak-oidc
+      OAUTH2_PROXY_CLIENT_ID: platform-portal
+      OAUTH2_PROXY_CLIENT_SECRET: "${PORTAL_OIDC_CLIENT_SECRET:?Set PORTAL_OIDC_CLIENT_SECRET in .env}"
+      OAUTH2_PROXY_COOKIE_SECRET: "${OAUTH2_PROXY_COOKIE_SECRET:?Set OAUTH2_PROXY_COOKIE_SECRET in .env}"
+      OAUTH2_PROXY_COOKIE_SECURE: "false"
+      OAUTH2_PROXY_COOKIE_SAMESITE: lax
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+      OAUTH2_PROXY_OIDC_ISSUER_URL: http://keycloak:8080/realms/open-source-data-platform
+      OAUTH2_PROXY_SKIP_OIDC_DISCOVERY: "true"
+      OAUTH2_PROXY_LOGIN_URL: http://localhost:8180/realms/open-source-data-platform/protocol/openid-connect/auth?kc_idp_hint=azure-entra
+      OAUTH2_PROXY_REDEEM_URL: http://keycloak:8080/realms/open-source-data-platform/protocol/openid-connect/token
+      OAUTH2_PROXY_PROFILE_URL: http://keycloak:8080/realms/open-source-data-platform/protocol/openid-connect/userinfo
+      OAUTH2_PROXY_OIDC_JWKS_URL: http://keycloak:8080/realms/open-source-data-platform/protocol/openid-connect/certs
+      OAUTH2_PROXY_REDIRECT_URL: http://localhost:3000/oauth2/callback
+      OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
+      OAUTH2_PROXY_REVERSE_PROXY: "true"
+      OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+      OAUTH2_PROXY_SCOPE: "openid profile email"
+      OAUTH2_PROXY_UPSTREAMS: static://202
+    depends_on:
+      keycloak:
+        condition: service_started
+      keycloak-portal-client-config:
+        condition: service_completed_successfully
+      keycloak-entra-config:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   prometheus:
@@ -261,7 +298,7 @@ services:
     restart: unless-stopped
 
   keycloak:
-    profiles: ["governance"]
+    profiles: ["governance", "portal"]
     image: quay.io/keycloak/keycloak:26.0.7
     command: ["start-dev", "--import-realm"]
     environment:
@@ -275,7 +312,7 @@ services:
     restart: unless-stopped
 
   keycloak-entra-config:
-    profiles: ["governance"]
+    profiles: ["governance", "portal"]
     image: quay.io/keycloak/keycloak:26.0.7
     entrypoint: ["/bin/sh", "/scripts/configure-entra.sh"]
     environment:
@@ -286,6 +323,21 @@ services:
       AZURE_CLIENT_SECRET: "${AZURE_CLIENT_SECRET}"
     volumes:
       - ../../keycloak/scripts/configure-entra.sh:/scripts/configure-entra.sh:ro
+    depends_on:
+      keycloak:
+        condition: service_started
+    restart: "no"
+
+  keycloak-portal-client-config:
+    profiles: ["governance", "portal"]
+    image: quay.io/keycloak/keycloak:26.0.7
+    entrypoint: ["/bin/sh", "/scripts/configure-portal-client.sh"]
+    environment:
+      KEYCLOAK_ADMIN_USER: "${KEYCLOAK_ADMIN_USER:-tuph}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD in .env}"
+      PORTAL_OIDC_CLIENT_SECRET: "${PORTAL_OIDC_CLIENT_SECRET:?Set PORTAL_OIDC_CLIENT_SECRET in .env}"
+    volumes:
+      - ../../keycloak/scripts/configure-portal-client.sh:/scripts/configure-portal-client.sh:ro
     depends_on:
       keycloak:
         condition: service_started
