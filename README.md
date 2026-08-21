@@ -72,6 +72,26 @@ flowchart LR
 
 The flow is **Landing page → Azure Entra sign-in → protected Workbench → application station**. Application health values are live and therefore can differ from the captured interface reference.
 
+## 5-minute Maximo demo
+
+LDL's reference use case is Maximo maintenance, not a generic e-commerce
+sample. The deterministic local fixture is normalized by the same connector
+code used for the live Maximo API, then flows through Airflow and dbt.
+
+```text
+Maximo work orders → raw.maximo_workorder → dbt core/mart models
+→ Trino / Superset / AI Assistant
+```
+
+```powershell
+.\scripts\demo-up.ps1 -Workorders 1000 -SkipAirbyte -SkipOpenMetadata
+```
+
+The command generates the fixture, starts Compose, triggers
+`maximo_dbt_pipeline`, waits for its dbt quality gates and prints application
+URLs. For a source-integrated run, configure the `MAXIMO_*` HTTPS variables
+instead of using fixture mode. See [the Maximo demo guide](examples/maximo/README.md).
+
 ## Local Lab quick start
 
 ### 1. Prerequisites

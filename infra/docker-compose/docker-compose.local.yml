@@ -421,6 +421,7 @@ services:
       POSTGRES_PORT_INTERNAL: "5432"
       MAXIMO_ALLOW_INSECURE_HTTP: "${MAXIMO_ALLOW_INSECURE_HTTP:-false}"
       MAXIMO_INGEST_ENABLED: "${MAXIMO_INGEST_ENABLED:-false}"
+      MAXIMO_FIXTURE_PATH: "${MAXIMO_FIXTURE_PATH:-}"
     entrypoint: ["bash", "/opt/airflow/platform-entrypoint.sh"]
     command: ["db", "migrate"]
     volumes: &airflow_volumes
@@ -428,6 +429,7 @@ services:
       - ../../airflow/logs:/opt/airflow/logs
       - ../../dbt/bsr_analytics:/opt/dbt
       - ../../ingestion/maximo/maximo_ingest.py:/opt/ingestion/maximo_ingest.py:ro
+      - ../../examples/maximo:/opt/ingestion/maximo-demo:ro
       - ../../docker/airflow/platform-entrypoint.sh:/opt/airflow/platform-entrypoint.sh:ro
     depends_on:
       postgres-migrations:

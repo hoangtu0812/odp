@@ -91,7 +91,15 @@ class Handler(BaseHTTPRequestHandler):
             with connection() as db, db.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
                 cursor.execute(query)
                 rows = cursor.fetchall()
-            self.respond(HTTPStatus.OK, {"intent": intent, "title": title, "sql": query, "rows": rows, "guardrail": "Only pre-approved mart queries are executable."})
+            self.respond(HTTPStatus.OK, {
+                "intent": intent,
+                "answer": title,
+                "source_dataset": "mart.workorder_summary",
+                "generated_sql": query,
+                "execution_status": "succeeded",
+                "rows": rows,
+                "guardrail": "Only pre-approved mart queries are executable.",
+            })
         except Exception as error:
             self.respond(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(error)})
 

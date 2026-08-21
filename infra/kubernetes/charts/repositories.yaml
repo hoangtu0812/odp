@@ -1,0 +1,23 @@
+# Pinned releases are deliberately installed by scripts/k8s-up.* rather than
+# vendored into the repository. Run helm repo update before changing a pin.
+charts:
+  airflow:
+    repository: https://airflow.apache.org
+    chart: apache-airflow/airflow
+    version: 1.22.0
+  superset:
+    repository: https://apache.github.io/superset
+    chart: superset/superset
+    version: 0.14.0
+  airbyte:
+    repository: https://airbytehq.github.io/helm-charts
+    chart: airbyte/airbyte
+    version: 1.1.0
+  openmetadata:
+    repository: https://helm.open-metadata.org/
+    chart: open-metadata/openmetadata
+    version: 1.6.9
+  kube-prometheus-stack:
+    repository: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-community/kube-prometheus-stack
+    version: 65.5.1

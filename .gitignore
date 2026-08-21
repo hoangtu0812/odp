@@ -25,3 +25,5 @@ certificates/
 .idea/
 .DS_Store
 Thumbs.db
+examples/maximo/generated/
+requirements/

@@ -61,6 +61,25 @@ flowchart LR
 
 Luồng sử dụng là **Landing page → Azure Entra sign-in → Workbench được bảo vệ → application station**. Trạng thái health của ứng dụng là dữ liệu live nên có thể khác ảnh giao diện tham chiếu.
 
+## Demo Maximo trong 5 phút
+
+Use case tham chiếu của LDL là bảo trì Maximo, không phải một domain E-commerce
+không liên quan. Fixture local deterministic được chuẩn hóa bởi cùng connector
+với Maximo API thực, sau đó chạy qua Airflow và dbt.
+
+```text
+Maximo work orders → raw.maximo_workorder → dbt core/mart models
+→ Trino / Superset / AI Assistant
+```
+
+```powershell
+.\scripts\demo-up.ps1 -Workorders 1000 -SkipAirbyte -SkipOpenMetadata
+```
+
+Lệnh tạo fixture, khởi động Compose, trigger `maximo_dbt_pipeline`, chờ các
+quality gate dbt và in URL ứng dụng. Với nguồn tích hợp thật, cấu hình các biến
+HTTPS `MAXIMO_*` thay vì fixture mode. Xem [hướng dẫn demo Maximo](examples/maximo/README.md).
+
 ## Chạy đầy đủ Local Lab
 
 ### 1. Điều kiện cần

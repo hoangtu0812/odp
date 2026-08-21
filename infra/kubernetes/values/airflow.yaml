@@ -1,0 +1,28 @@
+executor: LocalExecutor
+images:
+  airflow:
+    repository: ldl-airflow
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+dags:
+  persistence:
+    enabled: true
+    existingClaim: ldl-airflow-dags
+postgresql:
+  enabled: false
+data:
+  metadataConnection:
+    user: airflow
+    pass: "" # injected by the bootstrap secret, never committed
+    protocol: postgresql
+    host: postgres.ldl-data.svc.cluster.local
+    port: 5432
+    db: airflow
+apiServer:
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits: { cpu: "1", memory: 1Gi }
+scheduler:
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits: { cpu: "1", memory: 1Gi }

@@ -8,3 +8,5 @@ models:
         tests: [not_null]
       - name: work_order_count
         tests: [not_null]
+      - name: estimated_cost_total
+        tests: [not_null]
